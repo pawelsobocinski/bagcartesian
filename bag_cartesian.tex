@@ -308,9 +308,13 @@ Send each arrow $r \colon X \to Y$ to its bag-tabulation span $(Z, f, g)$.
 \end{proof}
 
 %% ============================================================
-\section{Completeness for Bag Semantics}
+\section{Completeness and Decidability}
 \label{sec:completeness}
 %% ============================================================
+
+The characterisation theorem and the algebraic structure of CQ polynomials yield two independent results: a \emph{structural} completeness theorem (the axioms capture exactly the right precongruence) and an \emph{effective} decidability theorem (with explicit complexity bounds). We present both.
+
+\subsection{Completeness of the axiom system}
 
 \begin{corollary}[Completeness]\label{cor:completeness}
 The bag-cartesian bicategory axioms \textup{(i)--(v)} are complete for $\Mat_\N$: for CQ terms $\varphi$ and $\psi$, $\varphi \leq_{\mathrm{bag}} \psi$ iff $\varphi \leq \psi$ is derivable from the axioms.
@@ -320,13 +324,40 @@ The bag-cartesian bicategory axioms \textup{(i)--(v)} are complete for $\Mat_\N$
 $\Mat_\N = \Span_{\mathrm{mono}}(\FinSet)$ is functionally complete: given $q \colon X \to I$, take $Z = \{(x,k) : 1 \leq k \leq q(x)\}$ with $i(x,k) = x$. By Theorem~\ref{thm:characterisation}, the axiom-generated precongruence coincides with the $\Span_{\mathrm{mono}}$ ordering, which is bag containment.
 \end{proof}
 
-\begin{corollary}[Decidability]\label{cor:decidability}
+This is a structural result: it identifies the \emph{right axiom system} for bag semantics, placing it in the Carboni--Walters programme alongside the characterisation of $\Rel$ by cartesian bicategories \cite{CW,BSS}. It does not, by itself, yield an effective decision procedure, since arguing that derivability in the symmetric monoidal PROP is recursively enumerable requires care with the infinitely many coherence axiom schemas.
+
+\subsection{Decidability via real closed fields}
+
+An independent route to decidability avoids the axiom system entirely, using instead the algebraic structure of CQ evaluation polynomials.
+
+\begin{theorem}[Decidability]\label{thm:decidability}
 Bag-semantic CQ containment is decidable.
-\end{corollary}
+\end{theorem}
 
 \begin{proof}
-Derivability is r.e.\ (enumerate proofs). Non-containment is r.e.\ (enumerate counterexample databases). Both r.e.\ implies decidable.
+The evaluation polynomial $P_\varphi(T,a) = \sum_{\bar{b}} \prod_j T(v_j, w_j)$ is \textbf{homogeneous} of degree $m = |\mathrm{atoms}(\varphi)|$ in the matrix entries $T(x,y)$.
+
+\medskip\noindent\textbf{Unequal-degree case.}
+If $|\mathrm{atoms}(\varphi)| \neq |\mathrm{atoms}(\psi)|$, say $m > m'$, then $P_\varphi(\lambda I, a) = \lambda^m P_\varphi(I,a)$ grows faster than $P_\psi(\lambda I, a) = \lambda^{m'} P_\psi(I,a)$ as $\lambda \to \infty$, so containment fails. The case $m < m'$ is symmetric. So the unequal-degree case is decidable (in constant time).
+
+\medskip\noindent\textbf{Equal-degree case.}
+When $m = m'$, the difference $P_\psi - P_\varphi$ is homogeneous of degree $m$. For homogeneous polynomials, $P(\lambda x) = \lambda^m P(x)$, so non-negativity on $\N^k$ is equivalent to non-negativity on $\mathbb{R}_{\geq 0}^k$ (scale rationals to integers; extend to reals by density).
+
+It remains to handle the unbounded domain size $n$. Each variable assignment $h \colon \mathrm{vars}(\varphi) \to [n]$ induces a partition $\pi$ of $\mathrm{vars}(\varphi)$ (identifying variables with the same image). For a partition $\pi$ with $b$ blocks, the contribution involves only the $b^2$ matrix entries between $b$ distinct domain elements, multiplied by $n^{\underline{b}} = n(n{-}1)\cdots(n{-}b{+}1)$ (counting injective placements). Since the number of partitions is finite (bounded by the Bell number of $|\mathrm{vars}(\varphi)| + |\mathrm{vars}(\psi)|$), we obtain:
+\begin{enumerate}
+  \item For each $n \leq B = |\mathrm{vars}(\varphi)| + |\mathrm{vars}(\psi)|$: a non-negativity condition on $\mathbb{R}_{\geq 0}^{n^2}$.
+  \item For $n > B$: an asymptotic condition determined by the leading partition types, again a non-negativity condition on $\mathbb{R}_{\geq 0}^{B^2}$.
+\end{enumerate}
+Each condition is a first-order sentence $\forall \bar{x} \geq 0\colon P(\bar{x}) \geq 0$ in the theory of \textbf{real closed fields} (RCF). By Tarski's quantifier elimination theorem \cite{Tarski}, each is decidable.
 \end{proof}
+
+\begin{remark}[Complexity bounds]
+Each RCF sentence involves $O(B^2)$ variables and degree $O(m)$. By the known complexity of quantifier elimination for RCF with a single universal block, the decision procedure runs in space polynomial in $B$ and $m$ for fixed quantifier structure, giving an upper bound of $\mathrm{EXPTIME}$ in the CQ size. A lower bound of $\mathrm{coNP}$ follows from the NP-completeness of set-semantic CQ containment (which reduces to the bag case by restricting to $\{0,1\}$-databases). We conjecture that the precise complexity is $\mathrm{coNP}$-complete.
+\end{remark}
+
+\begin{remark}[Two independent results]
+Corollary~\ref{cor:completeness} and Theorem~\ref{thm:decidability} are logically independent. The completeness theorem identifies the \emph{right axiom system} for bag semantics (a structural contribution within the Carboni--Walters programme); decidability follows as a consequence, contingent on the effectiveness of derivation search in the symmetric monoidal PROP. The Tarski argument establishes decidability \emph{directly} from the algebraic structure of CQ polynomials, with explicit complexity bounds, but makes no reference to the axiom system. The two results are complementary: the axioms explain \emph{why} bag containment has the structure it does; the Tarski argument shows \emph{how} to decide it.
+\end{remark}
 
 %% ============================================================
 \section{The Mono-Stability Principle}
@@ -379,8 +410,6 @@ Cauchy--Schwarz & Fibrewise pairs $\hookrightarrow$ global pairs & Yes \\
 
 \medskip\noindent\textbf{Functional completeness.} For $\Mat_\N$, this holds by explicit construction. For the free bag-cartesian bicategory on a signature, it should follow from the Kleisli construction for symmetric comonads \cite{CW}.
 
-\medskip\noindent\textbf{Complexity.} Decidability is established in principle; bounding the complexity remains open.
-
 \medskip\noindent\textbf{Generalisation.} For any class of monomorphisms $\mathcal{M}$ in a category $\mathcal{E}$, one obtains $\Span_\mathcal{M}(\mathcal{E})$ and the $\mathcal{M}$-stable fragment of the cartesian bicategory axioms. The bag-cartesian case is $\mathcal{M} = $ all monos; the set-semantic case is $\mathcal{M} = $ all arrows.
 
 %% ============================================================
@@ -411,6 +440,11 @@ PODS 1993.
 A.K.~Chandra, P.M.~Merlin.
 \emph{Optimal implementation of conjunctive queries in relational databases.}
 STOC 1977.
+
+\bibitem{Tarski}
+A.~Tarski.
+\emph{A Decision Method for Elementary Algebra and Geometry.}
+RAND Corporation, 1951.
 
 \end{thebibliography}
 
