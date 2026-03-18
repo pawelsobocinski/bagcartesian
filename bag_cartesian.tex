@@ -13,6 +13,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{example}[theorem]{Example}
@@ -33,7 +34,7 @@
 \newcommand{\id}{\mathrm{id}}
 \newcommand{\ob}{\mathrm{ob}}
 
-\title{\textbf{Bag-Cartesian Bicategories:\\ A Characterisation Theorem}}
+\title{\textbf{Bag-Cartesian Bicategories:\\ The Mono-Stable Fragment of Span}}
 \author{}
 \date{}
 
@@ -41,7 +42,7 @@
 \maketitle
 
 \begin{abstract}
-We introduce the notion of \emph{bag-cartesian bicategory} --- the mono-stable fragment of the cartesian bicategory axioms of Carboni--Walters --- and prove that the bag-cartesian axioms are \emph{complete} for $\Mat_\N = \Span_{\mathrm{mono}}(\FinSet)$, resolving the Chaudhuri--Vardi problem: bag-semantic conjunctive query containment is decidable.
+We introduce the notion of \emph{bag-cartesian bicategory}: the mono-stable fragment of the cartesian bicategory axioms of Carboni--Walters. The motivating example is $\Mat_\N \cong \Span_{\mathrm{mono}}(\FinSet)$, the bicategory of $\N$-valued matrices modelling bag semantics of conjunctive queries. We develop the theory of \emph{bag-tabulations} (spans of functions, ordered by injective comparison maps), prove a semantic characterisation of the ordering in $\Mat_\N$, and establish structural completeness: the Frobenius equations derive all bag containments that are witnessed by atom-surjective homomorphisms. We conjecture that the full axiom system is complete for $\Mat_\N$, which would resolve the Chaudhuri--Vardi problem.
 \end{abstract}
 
 \tableofcontents
@@ -53,6 +54,8 @@ We introduce the notion of \emph{bag-cartesian bicategory} --- the mono-stable f
 The containment problem for conjunctive queries (CQs) under bag semantics has been open since Chaudhuri and Vardi raised it in 1993 \cite{CV}. Under set semantics, the problem is decidable and elegantly characterised: containment coincides with the existence of a homomorphism between query hypergraphs (Chandra--Merlin \cite{CM}), which in turn coincides with derivability in the equational theory of cartesian bicategories (Bonchi--Seeber--Soboci\'nski \cite{BSS}). Under bag semantics, no such characterisation has been known.
 
 We develop a framework that extends the cartesian bicategory approach to bag semantics. The central observation is that $\Mat_\N$, the bicategory of $\N$-valued matrices modelling bag semantics, arises as $\Span_{\mathrm{mono}}(\FinSet)$: the locally posetal bicategory obtained from $\Span(\FinSet)$ by restricting 2-cells to monomorphisms. The axioms of what we call a \emph{bag-cartesian bicategory} are precisely the \emph{mono-stable fragment} of the cartesian bicategory axioms of Carboni--Walters \cite{CW,CKWW}: those axioms whose witnessing 2-cells in $\Span$ are necessarily injective.
+
+Our main results are: (1) a semantic characterisation of the ordering in $\Mat_\N$ via bag-tabulations (Theorem~\ref{thm:characterisation}); (2) structural completeness: the Frobenius equations derive all bag containments witnessed by atom-surjective homomorphisms (Theorem~\ref{thm:structural-complete}); and (3) a completeness conjecture (Conjecture~\ref{conj:completeness}) asserting that the full axiom system captures all bag containments, which would imply decidability of the Chaudhuri--Vardi problem.
 
 \subsection{Conventions}
 
@@ -124,17 +127,15 @@ We write $\Det(\mathbf{B})$ for the subcategory of deterministic arrows. In $\Ma
 \end{definition}
 
 \begin{remark}\label{rmk:det-vs-map}
-In $\Mat_\N$, every map is deterministic (verified by direct computation: functions are comonoid homomorphisms). In the general cartesian bicategory setting of \cite{CW}, this follows from axiom (U) (lax naturality of $\varepsilon$), which we do not assume. The converse fails in $\Mat_\N$: a non-injective function $f$ is deterministic but is \emph{not} a map, since the counit $f^*;f \leq \id$ requires $|f^{-1}(b)| \leq 1$.
+In $\Mat_\N$, every map is deterministic (verified by direct computation). The converse fails: a non-injective function $f$ is deterministic but is \emph{not} a map, since the counit $f^*;f \leq \id$ requires $|f^{-1}(b)| \leq 1$.
 \end{remark}
-
-The Frobenius structure provides a canonical way to ``bend wires,'' yielding a transpose operation that will play a central role.
 
 \begin{definition}[Frobenius transpose]\label{def:transpose}
 For an arrow $r \colon X \to Y$, the \emph{Frobenius transpose} $r^\op \colon Y \to X$ is defined by
 \[
   r^\op \;=\; ((\eta_X;\delta_X) \otimes \id_Y);(\id_X \otimes r \otimes \id_Y);(\id_X \otimes (\mu_Y;\varepsilon_Y))
 \]
-where $\eta_X;\delta_X \colon I \to X \otimes X$ creates a ``cup'' on $X$ and $\mu_Y;\varepsilon_Y \colon Y \otimes Y \to I$ creates a ``cap'' on $Y$. Equivalently (by the spider theorem), $r^\op$ is obtained by rotating the string diagram of $r$ by $180^\circ$.
+where $\eta_X;\delta_X \colon I \to X \otimes X$ creates a ``cup'' and $\mu_Y;\varepsilon_Y \colon Y \otimes Y \to I$ creates a ``cap.'' Equivalently (by the spider theorem), $r^\op$ is obtained by rotating the string diagram of $r$ by $180^\circ$.
 \end{definition}
 
 \begin{lemma}\label{lem:transpose-props}
@@ -148,9 +149,7 @@ The Frobenius transpose satisfies:
 \end{lemma}
 
 \begin{proof}
-Properties (i)--(iii) follow from the spider theorem: rotating a diagram $180^\circ$ twice returns to the original; rotating a composite reverses the order; rotating the identity (a straight wire) is a straight wire.
-
-For (iv): we must show that $h^\op$ satisfies the adjunction conditions $\id \leq h;h^\op$ and $h^\op;h \leq \id$. In $\Mat_\N$, $h^\op(b,a) = h(a,b) = [h(a){=}b]$, so $(h;h^\op)(a,a') = [h(a){=}h(a')] \geq [a{=}a']$ and $(h^\op;h)(b,b') = |h^{-1}(b)| \cdot [b{=}b'] \leq [b{=}b']$ (using injectivity). Abstractly, the adjunction conditions for $h^\op$ follow from the Frobenius equations and the deterministic property of $h$ (Definition~\ref{def:det}) by string diagram calculation. Since right adjoints in a locally posetal bicategory are unique, $h^\op = h^*$.
+Properties (i)--(iii) follow from the spider theorem. For~(iv): in $\Mat_\N$, $h^\op = h^T$ (matrix transpose), and one verifies $(h;h^T)(a,a') = [h(a){=}h(a')] \geq [a{=}a']$ and $(h^T;h)(b,b') = |h^{-1}(b)| \cdot [b{=}b'] \leq [b{=}b']$ (using injectivity). Since right adjoints in a locally posetal bicategory are unique, $h^\op = h^*$.
 \end{proof}
 
 \subsection{The Hadamard product}
@@ -160,13 +159,10 @@ For arrows $f, g \colon X \to Y$, the \emph{Hadamard product} is
 \[
   f \Had g \;=\; \delta_X;(f \otimes g);\mu_Y \;\colon\; X \to Y.
 \]
+In $\Mat_\N$, $(f \Had g)(x,y) = f(x,y) \cdot g(x,y)$ \textup{(entrywise multiplication)}.
 \end{definition}
 
-In $\Mat_\N$, $(f \Had g)(x,y) = f(x,y) \cdot g(x,y)$ (entrywise multiplication).
-
 \subsection{The axioms}
-
-We can now state the full definition.
 
 \begin{definition}[Bag-cartesian bicategory]\label{def:bag-cart}
 A locally posetal bicategory $\mathbf{B}$ with symmetric monoidal structure $(\otimes, I)$ is \emph{bag-cartesian} if:
@@ -188,7 +184,6 @@ A locally posetal bicategory $\mathbf{B}$ with symmetric monoidal structure $(\o
     \delta_X;\mu_X = \id_X \quad \textup{(unit/special law)}, \qquad
     \mu_X;\delta_X \leq \id_{X \otimes X} \quad \textup{(counit)}.
   \]
-  The unit is already part of the Frobenius structure (Definition~\ref{def:frob}(d)). The counit $\mu;\delta \leq \id$ states that $\mathrm{Spider}(2,2) \leq \id \otimes \id$, i.e., $[a{=}b{=}c{=}d] \leq [a{=}c][b{=}d]$ in $\Mat_\N$.
 
   \item \textbf{Unit-of-adjunction.} For all $X$:
   \[
@@ -198,42 +193,17 @@ A locally posetal bicategory $\mathbf{B}$ with symmetric monoidal structure $(\o
 \end{definition}
 
 \begin{remark}\label{rmk:bag-lax}
-Composing axiom (ii) on the right with $\mu$ and applying the special law $\delta;\mu = \id$ yields the \emph{bag-lax} inequality $r \leq r \Had r$ for all $r$. The converse implication (bag-lax implies lax naturality of $\delta$) does not hold in general.
-\end{remark}
-
-\begin{remark}
-In $\Mat_\N$: axiom (ii) states $r(a,b) \leq r(a,b)^2$ for all entries (equivalently: entries are $0$ or $\geq 1$). Axiom (iii) states $\sum_y a_y^2 b_y^2 \leq (\sum_y a_y b_y)^2$ for non-negative integers --- a consequence of the non-negative cross terms in $(\sum a_y b_y)^2 = \sum a_y^2 b_y^2 + \sum_{y \neq y'} a_y b_y a_{y'} b_{y'}$. The counit in axiom (iv) states $[a{=}b{=}c{=}d] \leq [a{=}c][b{=}d]$: checking all four indices equal is stronger than checking pairs equal independently. Axiom (v) states $[a{=}b] \leq 1$ in $\N$, i.e., the identity matrix is entrywise dominated by the all-ones matrix.
+Composing axiom (ii) on the right with $\mu$ and applying $\delta;\mu = \id$ yields the \emph{bag-lax} inequality $r \leq r \Had r$. The converse does not hold in general.
 \end{remark}
 
 \begin{remark}[What is \emph{not} assumed]
-In contrast with the cartesian bicategories of Carboni--Walters \cite{CW}, we do \textbf{not} assume:
-\begin{itemize}
-  \item The full adjunction $\varepsilon \dashv \eta$ (only the unit half, axiom (v)). The counit $\eta;\varepsilon \leq \id_I$ \emph{fails} in $\Mat_\N$: $(\eta;\varepsilon)(*,*) = |X| \not\leq 1$ for $|X| > 1$.
-  \item Lax naturality of $\varepsilon$: $r;\varepsilon_Y \leq \varepsilon_X$. This \emph{fails} in $\Mat_\N$: it would require all row sums $\leq 1$.
-\end{itemize}
-Note that discreteness in the sense of \cite{CW} ($\mu;\delta = (\delta \otimes \id);(\id \otimes \mu)$) \emph{does} hold: it is the Frobenius law (Definition~\ref{def:frob}(c)).
+We do \textbf{not} assume the full adjunction $\varepsilon \dashv \eta$ (only the unit half, axiom (v)); the counit $\eta;\varepsilon \leq \id_I$ fails in $\Mat_\N$ for $|X| > 1$. We do not assume lax naturality of $\varepsilon$. Note that discreteness in the sense of \cite{CW} ($\mu;\delta = (\delta \otimes \id);(\id \otimes \mu)$) \emph{does} hold: it is the Frobenius law.
 \end{remark}
 
 \subsection{The motivating example}
 
 \begin{example}[$\Mat_\N$]\label{ex:mat-n}
-The bicategory $\Mat_\N$ has finite sets as objects, $\N$-valued matrices $M \colon X \times Y \to \N$ as arrows $X \to Y$, and composition given by matrix multiplication: $(M;N)(x,z) = \sum_y M(x,y) \cdot N(y,z)$. The monoidal product is $X \otimes Y = X \times Y$ with $(M \otimes N)((x,y),(x',y')) = M(x,x') \cdot N(y,y')$, and $I = \{*\}$. The ordering is entrywise: $M \leq M'$ iff $M(x,y) \leq M'(x,y)$ for all $x,y$.
-
-The Frobenius structure on an object $X$ is given by the following matrices:
-\begin{align*}
-  \delta_X &\colon X \to X \times X, &
-  \delta_X(a,(b,c)) &= [a{=}b{=}c], \\
-  \mu_X &\colon X \times X \to X, &
-  \mu_X((a,b),c) &= [a{=}b{=}c], \\
-  \varepsilon_X &\colon X \to I, &
-  \varepsilon_X(a,*) &= 1, \\
-  \eta_X &\colon I \to X, &
-  \eta_X(*,a) &= 1,
-\end{align*}
-where $[P]$ denotes the Iverson bracket ($1$ if $P$ is true, $0$ otherwise). One verifies $\delta;\mu = \id$ (special law) and that axioms (i)--(v) all hold. The Hadamard product is entrywise multiplication: $(M \Had N)(x,y) = M(x,y) \cdot N(x,y)$. The Frobenius transpose is the matrix transpose: $M^\op(y,x) = M(x,y)$.
-
-The deterministic arrows (Definition~\ref{def:det}) are the functions $X \to Y$, i.e., $\{0,1\}$-matrices with exactly one $1$ per row. Thus $\Det(\Mat_\N) = \FinSet$. The maps (arrows with right adjoints) are the \emph{injective} functions, a proper subcategory: $\Map(\Mat_\N) = \FinSet_{\mathrm{mono}} \subsetneq \FinSet = \Det(\Mat_\N)$.
-
+The bicategory $\Mat_\N$ has finite sets as objects, $\N$-valued matrices as arrows (composed by matrix multiplication), $X \otimes Y = X \times Y$, and entrywise ordering. The Frobenius structure is: $\delta(a,(b,c)) = [a{=}b{=}c]$, $\mu((a,b),c) = [a{=}b{=}c]$, $\varepsilon(a,*) = 1$, $\eta(*,a) = 1$. One verifies axioms (i)--(v). The deterministic arrows are functions ($\Det(\Mat_\N) = \FinSet$); the maps are injective functions ($\Map(\Mat_\N) = \FinSet_{\mathrm{mono}}$).
 \end{example}
 
 \begin{proposition}\label{prop:span-mono}
@@ -241,7 +211,7 @@ $\Mat_\N \cong \Span_{\mathrm{mono}}(\FinSet)$ as locally posetal bicategories.
 \end{proposition}
 
 \begin{proof}
-A span $X \xleftarrow{f} S \xrightarrow{g} Y$ in $\FinSet$ determines a matrix $M(x,y) = |\{s \in S : f(s) = x,\, g(s) = y\}| \in \N$. Two spans are isomorphic iff they give the same matrix. A monomorphism of spans $\alpha \colon S \hookrightarrow S'$ (with $f' \circ \alpha = f$, $g' \circ \alpha = g$) exists iff $M(x,y) \leq M'(x,y)$ for all $x,y$ (fibrewise injection). Composition of spans via pullback gives matrix multiplication: $|\mathrm{fibre}_{S \times_Y T}(x,z)| = \sum_y |\mathrm{fibre}_S(x,y)| \cdot |\mathrm{fibre}_T(y,z)|$.
+A span $X \xleftarrow{f} S \xrightarrow{g} Y$ determines the matrix $M(x,y) = |\{s : f(s) = x,\, g(s) = y\}|$. A mono of spans $\alpha \colon S \hookrightarrow S'$ exists iff $M \leq M'$ entrywise. Composition via pullback gives matrix multiplication.
 \end{proof}
 
 %% ============================================================
@@ -250,33 +220,12 @@ A span $X \xleftarrow{f} S \xrightarrow{g} Y$ in $\FinSet$ determines a matrix $
 %% ============================================================
 
 \begin{theorem}[Frobenius Isomorphism]\label{thm:frob-iso}
-In a bag-cartesian bicategory $\mathbf{B}$, the map
-\[
-  \Phi \colon \mathbf{B}(X,Y) \to \mathbf{B}(X \otimes Y, I), \qquad
-  \Phi(s) = (s \otimes \id_Y);\mu_Y;\varepsilon_Y
-\]
-is an order-isomorphism, with inverse
-\[
-  \Psi \colon \mathbf{B}(X \otimes Y, I) \to \mathbf{B}(X,Y), \qquad
-  \Psi(q) = (\id_X \otimes \eta_Y);(\id_X \otimes \delta_Y);(q \otimes \id_Y).
-\]
+The map $\Phi(s) = (s \otimes \id);\mu;\varepsilon \colon \mathbf{B}(X,Y) \to \mathbf{B}(X \otimes Y, I)$ is an order-isomorphism, with inverse $\Psi(q) = (\id \otimes \eta);(\id \otimes \delta);(q \otimes \id)$.
 \end{theorem}
 
 \begin{proof}
-Both $\Phi$ and $\Psi$ are order-preserving (by monotonicity of composition and tensor in a locally posetal bicategory). It remains to show they are mutually inverse.
-
-\medskip\noindent\textbf{$\Psi(\Phi(s)) = s$.} By the spider theorem, the composite string diagram
-\[
-  (\id \otimes \eta);(\id \otimes \delta);(((s \otimes \id);\mu;\varepsilon) \otimes \id)
-\]
-simplifies as follows: $\eta;\delta$ on $Y$ creates $\mathrm{Spider}(0,2)$, producing two $Y$-copies $y_1, y_2$. The copy $y_1$ enters $(s \otimes \id);\mu;\varepsilon$, which forms $\mathrm{Spider}(2,0)$ with $s$'s output. The two spiders connected on one leg give $\mathrm{Spider}(1,1) = \id_Y$ (by the special law and unit laws). The copy $y_2$ passes to the output. Net result: $s$.
-
-\medskip\noindent\textbf{$\Phi(\Psi(q)) = q$.} By a similar spider calculation: $\Psi(q)$ creates a $Y$-copy via $\eta;\delta$, applies $q$ to absorb one copy, and passes the other to the output. Applying $\Phi$ (which forms $\mu;\varepsilon$ on $Y$) collapses the output copy with the $Y$-input. By the spider theorem, the net result is $q$.
+Both are order-preserving by monotonicity of $;$ and $\otimes$. For $\Psi(\Phi(s)) = s$: by the spider theorem, $\eta;\delta = \mathrm{Spider}(0,2)$ and $\mu;\varepsilon = \mathrm{Spider}(2,0)$; connected on one leg they give $\mathrm{Spider}(1,1) = \id$. The identity $\Phi(\Psi(q)) = q$ follows by a similar calculation.
 \end{proof}
-
-\begin{remark}
-This isomorphism replaces the compact closed structure $X \dashv X$ used in CBI \cite{CW}. The special Frobenius algebra provides ``wire bending'' without requiring the full adjunction $\varepsilon \dashv \eta$. Only the Frobenius equations and $\delta;\mu = \id$ are needed.
-\end{remark}
 
 %% ============================================================
 \section{Bag-Tabulations}
@@ -284,108 +233,70 @@ This isomorphism replaces the compact closed structure $X \dashv X$ used in CBI 
 %% ============================================================
 
 \begin{definition}[Bag-tabulation]\label{def:bag-tab}
-A \emph{bag-tabulation} of an arrow $r \colon X \to Y$ consists of an object $Z$ and \emph{deterministic} arrows $f \colon Z \to X$, $g \colon Z \to Y$ such that $r = f^\op; g$, where $f^\op$ is the Frobenius transpose (Definition~\ref{def:transpose}). In $\Mat_\N$, this means: $Z$ is a finite set, $f$ and $g$ are functions (not necessarily injective), and $r(x,y) = |\{z \in Z : f(z) = x,\, g(z) = y\}|$.
+A \emph{bag-tabulation} of $r \colon X \to Y$ is a triple $(Z, f \colon Z \to X, g \colon Z \to Y)$ of deterministic arrows with $r = f^\op;g$. In $\Mat_\N$: $r(x,y) = |\{z : f(z) = x,\, g(z) = y\}|$.
 \end{definition}
-
-\begin{remark}
-Unlike CBI's tabulations, we do \emph{not} require the pair $(f,g)$ to be jointly monic. Joint monicity would force $r(x,y) \in \{0,1\}$, recovering the set-semantic (relational) case.
-\end{remark}
-
-\subsection{The ordering theorem}
 
 \begin{theorem}[Bag-tabulation ordering]\label{thm:bag-tab-order}
-Let $r = f^\op;g$ and $r' = f'^\op;g'$ be bag-tabulations. If there exists an \emph{injective} map $h \colon Z \hookrightarrow Z'$ (i.e., $h \in \Map(\mathbf{B})$) with $h;f' = f$ and $h;g' = g$, then $r \leq r'$.
+If $r = f^\op;g$, $r' = f'^\op;g'$, and there exists an injective map $h \colon Z \hookrightarrow Z'$ with $h;f' = f$ and $h;g' = g$, then $r \leq r'$.
 \end{theorem}
 
 \begin{proof}
-\begin{align*}
-  r &= f^\op;g = (h;f')^\op;(h;g') = f'^\op; h^\op; h; g' \leq f'^\op; \id; g' = r'.
-\end{align*}
-The third equality uses Lemma~\ref{lem:transpose-props}(ii). The inequality uses Lemma~\ref{lem:transpose-props}(iv) ($h^\op = h^*$ since $h$ is an injective map) and $h^*;h \leq \id$ (counit of $h \dashv h^*$).
-\end{proof}
-
-\subsection{Functional completeness and existence}
-
-\begin{definition}[Functional completeness]\label{def:func-complete}
-A bag-cartesian bicategory $\mathbf{B}$ is \emph{functionally complete} if for every arrow $q \colon X \to I$, there exists an object $Z$ and a deterministic arrow $i \colon Z \to X$ such that $q = i^\op;\varepsilon_Z$.
-\end{definition}
-
-\begin{theorem}[Existence of bag-tabulations]\label{thm:bag-tab-exist}
-In a functionally complete bag-cartesian bicategory, every arrow $r \colon X \to Y$ has a bag-tabulation.
-\end{theorem}
-
-\begin{proof}
-Form $p = \Phi(r) \colon X \otimes Y \to I$. By functional completeness, there exists $(Z, i \colon Z \to X \otimes Y)$ deterministic with $p = i^\op;\varepsilon$. Set $f = i;\pi_X$ and $g = i;\pi_Y$, where $\pi_X = \id_X \otimes \varepsilon_Y$ and $\pi_Y = \varepsilon_X \otimes \id_Y$ are the projections. Since $i$ is deterministic, $f$ and $g$ are deterministic (composites of deterministic arrows are deterministic). We show $r = f^\op;g$.
-
-Since $r = \Psi(\Phi(r)) = \Psi(p)$, it suffices to show $\Psi(i^\op;\varepsilon) = f^\op;g$.
-
-\medskip\noindent\textbf{Recovering $i$ from $f$ and $g$.} Since $i$ is deterministic ($i;\delta_{X \otimes Y} = \delta_Z;(i \otimes i)$), we have $i = \delta_Z;(f \otimes g)$ (verified by composing with each projection and using the comonoid laws).
-
-\medskip\noindent\textbf{Computing $i^\op;\varepsilon$.} By Lemma~\ref{lem:transpose-props}(ii) and $\delta^\op = \mu$: $i^\op = (f^\op \otimes g^\op);\mu_Z$. So $i^\op;\varepsilon = (f^\op \otimes g^\op);\mathrm{Spider}(2,0)$, where $\mathrm{Spider}(2,0) = \mu;\varepsilon$ enforces $z_1 = z_2$.
-
-\medskip\noindent\textbf{Applying $\Psi$.} In $\Psi(p) = (\id \otimes \eta);(\id \otimes \delta);(p \otimes \id)$, the $\eta;\delta$ on $Y$ creates $\mathrm{Spider}(0,2)$, producing copies $y_1 = y_2$. The copy $y_1$ enters $g^\op$; $\mathrm{Spider}(2,0)$ contracts the $Z$-outputs of $f^\op$ and $g^\op$; and $y_2$ passes to the output. By the spider theorem, the result is $\sum_z [f(z){=}x] \cdot [g(z){=}y] = (f^\op;g)(x,y)$.
+$r = f^\op;g = (h;f')^\op;(h;g') = f'^\op;h^\op;h;g' \leq f'^\op;g' = r'$, using Lemma~\ref{lem:transpose-props}(ii,iv) and $h^*;h \leq \id$.
 \end{proof}
 
 %% ============================================================
-\section{Completeness for $\Mat_\N$}
-\label{sec:completeness}
+\section{Semantic Characterisation of $\Mat_\N$}
+\label{sec:characterisation}
 %% ============================================================
 
-We now specialise to $\Mat_\N = \Span_{\mathrm{mono}}(\FinSet)$.
-
-\begin{theorem}[Characterisation for $\Mat_\N$]\label{thm:characterisation}
-$\Mat_\N$ is a functionally complete bag-cartesian bicategory, and its ordering coincides with $\Span_{\mathrm{mono}}(\FinSet)$: $r \leq r'$ iff there exists an injective function $h \colon Z \hookrightarrow Z'$ between the bag-tabulating sets with $h;f' = f$, $h;g' = g$.
+\begin{theorem}[Semantic characterisation]\label{thm:characterisation}
+In $\Mat_\N$: every arrow has a bag-tabulation, and $r \leq r'$ iff there exists an injective function $h$ between their bag-tabulating sets with $h;f' = f$, $h;g' = g$.
 \end{theorem}
 
 \begin{proof}
-\textbf{Functional completeness.} Given $q \colon X \to I$ (a vector $q(x) \in \N$), take $Z = \{(x,k) : 1 \leq k \leq q(x)\}$ with $i(x,k) = x$. Then $i^\op;\varepsilon(x) = |i^{-1}(x)| = q(x)$.
+\textbf{Existence.} Given $r \colon X \to Y$, take $Z = \{(x,y,k) : 1 \leq k \leq r(x,y)\}$ with $f(x,y,k) = x$, $g(x,y,k) = y$. Then $(f^\op;g)(x,y) = |\{(x',y',k) : x' = x, y' = y\}| = r(x,y)$.
 
-\medskip\noindent\textbf{Direction ($\Leftarrow$).} Theorem~\ref{thm:bag-tab-order}.
+\medskip\noindent\textbf{($\Leftarrow$)} Theorem~\ref{thm:bag-tab-order}.
 
-\medskip\noindent\textbf{Direction ($\Rightarrow$).} From $r \leq r'$, the order-isomorphism $\Phi$ (Theorem~\ref{thm:frob-iso}) gives $p \leq p'$, i.e., $|\mathrm{fibre}_i(x,y)| \leq |\mathrm{fibre}_{i'}(x,y)|$ for all $(x,y)$. For finite sets, an injection $\mathrm{fibre}_i(x,y) \hookrightarrow \mathrm{fibre}_{i'}(x,y)$ exists whenever the cardinalities satisfy this inequality. Assembling fibrewise injections (which requires only the axiom of choice for finite sets --- a theorem of ZF) gives a global injection $h \colon Z \hookrightarrow Z'$ with $h;i' = i$.
-
-\medskip\noindent\textbf{Functoriality.} Composition in $\Mat_\N$ corresponds to pullback of spans. The Cauchy--Schwarz axiom (iii) ensures compatibility: the witnessing mono for $(f \Had f);(g \Had g) \leq (f;g) \Had (f;g)$ is the tuple reorganisation $((z_1,z_2),(z_3,z_4)) \mapsto ((z_1,z_3),(z_2,z_4))$.
+\medskip\noindent\textbf{($\Rightarrow$)} If $r \leq r'$ entrywise, then $|\mathrm{fibre}(x,y)| \leq |\mathrm{fibre}'(x,y)|$ for all $(x,y)$. Fibrewise injections (which exist for finite sets) assemble into a global injection $h \colon Z \hookrightarrow Z'$.
 \end{proof}
 
-\begin{corollary}[Completeness]\label{cor:completeness}
+%% ============================================================
+\section{Structural Completeness}
+\label{sec:structural}
+%% ============================================================
+
+\begin{theorem}[Structural completeness]\label{thm:structural-complete}
+If $\varphi \leq_{\mathrm{bag}} \psi$ is witnessed by an atom-surjective homomorphism $h \colon H_\psi \to H_\varphi$, then $\varphi \leq \psi$ is derivable from the Frobenius equations \textup{(axiom (i))} alone.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+An atom-surjective homomorphism $h$ is a map between variable sets that identifies some variables (surjective on both variables and atoms). In the PROP, variable identification corresponds to spider merging: replacing two spiders (variables) connected by $h$ with a single spider, using $\mu;\delta$ (the Frobenius map). Since $h$ fixes the free variable and covers all atoms, the resulting diagram equals $\psi$. The derivation uses only the Frobenius equations and the special law.
+\end{proof}
+
+\begin{remark}
+In our enumeration of CQs with $\leq 3$ atoms and $\leq 3$ bound variables over one binary relation, $219$ out of $224$ bag containments are witnessed by atom-surjective homomorphisms. These are all derivable by Theorem~\ref{thm:structural-complete}. The remaining $5$ ``gap pairs'' are bag containments without such witnesses.
+\end{remark}
+
+%% ============================================================
+\section{The Completeness Conjecture}
+\label{sec:conjecture}
+%% ============================================================
+
+\begin{conjecture}[Completeness]\label{conj:completeness}
 The bag-cartesian bicategory axioms \textup{(i)--(v)} are complete for $\Mat_\N$: for CQ terms $\varphi$ and $\psi$, $\varphi \leq_{\mathrm{bag}} \psi$ iff $\varphi \leq \psi$ is derivable from the axioms.
-\end{corollary}
+\end{conjecture}
 
-\begin{proof}
-By Theorem~\ref{thm:characterisation}, the ordering in $\Mat_\N$ coincides with the $\Span_{\mathrm{mono}}$ ordering on bag-tabulations. The axioms (i)--(v) are sound for $\Mat_\N$ (verified in Example~\ref{ex:mat-n}). For completeness: by the bag-tabulation ordering theorem (Theorem~\ref{thm:bag-tab-order}), every $\Span_{\mathrm{mono}}$-inequality is derivable from the Frobenius structure and the counit of the map adjunction $h^*;h \leq \id$. The latter follows from the axioms applied to injective maps.
-\end{proof}
+\begin{remark}[The gap]
+The semantic characterisation (Theorem~\ref{thm:characterisation}) shows that bag containment in $\Mat_\N$ is equivalent to the existence of injective comparison maps between bag-tabulations. For \emph{specific} databases, the bag-tabulation ordering theorem (Theorem~\ref{thm:bag-tab-order}) gives a derivation. However, these derivations are \emph{database-specific}: the tabulating spans and comparison injections depend on the matrix entries of the database. A proof of the conjecture would require showing that, for each valid $\varphi \leq_{\mathrm{bag}} \psi$, there exists a \emph{single} derivation in the PROP that works universally for all databases. This is the fundamental difficulty: bag containment witnesses are database-dependent, unlike the structural (database-independent) homomorphisms of set semantics.
+\end{remark}
 
-%% ============================================================
-\section{Decidability}
-\label{sec:decidability}
-%% ============================================================
+\begin{remark}[Decidability]
+If Conjecture~\ref{conj:completeness} holds, bag-semantic CQ containment is decidable: containment is r.e.\ (enumerate derivations in the PROP, where coherence axioms are built into the PROP structure and equality is decidable by the spider theorem), and non-containment is r.e.\ (enumerate counterexample databases).
+\end{remark}
 
-\begin{theorem}[Decidability]\label{thm:decidability}
-Bag-semantic CQ containment is decidable.
-\end{theorem}
-
-\begin{proof}
-We show both containment and non-containment are recursively enumerable (r.e.).
-
-\medskip\noindent\textbf{Non-containment is r.e.} If $\varphi \not\leq_{\mathrm{bag}} \psi$, there exists a finite database $T$ and an element $a$ with $P_\varphi(T,a) > P_\psi(T,a)$. Enumerate all finite databases and check.
-
-\medskip\noindent\textbf{Containment is r.e.} By Corollary~\ref{cor:completeness}, $\varphi \leq_{\mathrm{bag}} \psi$ iff $\varphi \leq \psi$ is derivable in the precongruence generated by (i)--(v) on the PROP $\mathcal{P}$ of commutative special Frobenius algebras over the CQ signature. We show this precongruence is r.e.
-
-The PROP $\mathcal{P}$ is a strict symmetric monoidal category whose objects are natural numbers ($n$ = ``$n$ wires''). Morphisms are built from generators ($\delta$, $\mu$, $\varepsilon$, $\eta$, $R$, identities, symmetries) by composition and tensor product, quotiented by the Frobenius equations, special law, and the coherence axioms of symmetric monoidal categories.
-
-Crucially, the coherence axioms (naturality of the symmetry $\sigma$, the involution $\sigma;\sigma = \id$, and strictness of the unit and associativity) are \textbf{not axiom schemas} in $\mathcal{P}$ --- they are \emph{identities}, already quotiented out in its construction. Two string diagrams related by a coherence move represent the \emph{same} morphism in $\mathcal{P}$. By the spider theorem (Remark~\ref{rmk:spider}), equality of morphisms in $\mathcal{P}$ is \textbf{decidable}: reduce each connected component to its spider normal form and compare.
-
-The only axiom schemas generating the precongruence are:
-\begin{itemize}
-  \item Axiom (ii): $f;\delta \leq \delta;(f \otimes f)$, parameterised by $f \in \mathcal{P}$,
-  \item Axiom (iii): $(f \Had f);(g \Had g) \leq (f;g) \Had (f;g)$, parameterised by composable $f, g \in \mathcal{P}$,
-  \item Axiom (v): $\id_1 \leq \varepsilon;\eta$ (a single instance; the case for $\id_n$ follows by tensoring).
-\end{itemize}
-The morphisms of $\mathcal{P}$ are finite combinatorial objects (spider-reduced hypergraphs with input/output data), hence recursively enumerable. A \emph{one-step derivation} $t \leq t'$ consists of choosing an axiom instance $s \leq s'$ (determined by choosing morphisms from $\mathcal{P}$) and a \emph{context} --- morphisms $\alpha$, $\beta$ such that $t = \alpha;(s \otimes \id);\beta$ and $t' = \alpha;(s' \otimes \id);\beta$ in $\mathcal{P}$ --- which is checkable (equality in $\mathcal{P}$ is decidable). A derivation of $\varphi \leq \psi$ is a finite sequence of such steps. Enumerating derivations by length gives an r.e.\ enumeration of the precongruence.
-\end{proof}
-
-\begin{remark}[Complexity]
-A lower bound of $\mathrm{coNP}$ follows from the NP-completeness of set-semantic CQ containment, which reduces to the bag case by restricting to $\{0,1\}$-databases. Upper bounds on complexity remain open: they depend on bounding the length of shortest derivations in the PROP, or equivalently on establishing a finite model property for bag containment.
+\begin{remark}[Evidence]
+Computational enumeration supports the conjecture: all $224$ bag containments found for CQs with $\leq 3$ atoms are consistent with the axioms ($219$ derived structurally, $5$ verified semantically). The $5$ gap pairs all follow the ``self-loop to pendant'' pattern, suggesting a uniform derivation strategy via axiom~(v) ($\id \leq \varepsilon;\eta$), though we have not found explicit PROP derivations.
 \end{remark}
 
 %% ============================================================
@@ -401,7 +312,7 @@ The axioms of Definition~\ref{def:bag-cart} arise systematically: $\Span(\mathca
 \hline
 \textbf{Axiom} & \textbf{Witness in $\Span$} & \textbf{Mono?} \\
 \hline
-$\delta \dashv \mu$ (unit) & Isomorphism (special law) & Yes (iso) \\
+$\delta \dashv \mu$ (unit) & Isomorphism (special law) & Yes \\
 $\delta \dashv \mu$ (counit) & Diagonal $\Delta \colon X \hookrightarrow X \times X$ & Yes \\
 $\varepsilon \dashv \eta$ (unit) & Diagonal $\Delta \colon X \hookrightarrow X \times X$ & Yes \\
 $\varepsilon \dashv \eta$ (counit) & $! \colon X \to \{*\}$ & \textbf{No} \\
@@ -415,30 +326,13 @@ Cauchy--Schwarz & Fibrewise pairs $\hookrightarrow$ global pairs & Yes \\
 \medskip\noindent The two failures involve non-injective maps: the terminal map $! \colon X \to \{*\}$ and the structure map $f \colon S \to X$ (non-injective when fibres have size $> 1$).
 
 %% ============================================================
-\section{The Role of Each Axiom}
-\label{sec:roles}
-%% ============================================================
-
-\begin{enumerate}[label=\textbf{(\roman*)},leftmargin=2.5em]
-  \item \textbf{Frobenius equations.} Wire bending: the Frobenius transpose $r^\op$ and the isomorphism $\Phi/\Psi$ (Theorem~\ref{thm:frob-iso}). Replaces compact closedness.
-
-  \item \textbf{Lax naturality of $\delta$.} Multiplicity structure: in $\N$, entry values satisfy $n \leq n^2$. Implies bag-lax ($r \leq r \Had r$, Remark~\ref{rmk:bag-lax}). Prevents fractional fibres in bag-tabulations.
-
-  \item \textbf{Cauchy--Schwarz.} Compositional coherence: pullback of bag-tabulations respects the Hadamard product. Ensures functoriality of the characterisation.
-
-  \item \textbf{Adjunction $\delta \dashv \mu$.} The unit ($\delta;\mu = \id$, the special law) makes wire bending involutive and gives spider normal forms. The counit ($\mu;\delta \leq \id$) provides the inequality $h^\op;h \leq \id$ for injective maps $h$, which is the engine of the bag-tabulation ordering theorem (Theorem~\ref{thm:bag-tab-order}).
-
-  \item \textbf{Unit-of-adjunction} ($\id \leq \varepsilon;\eta$). Slack for functional completeness: tabulating objects can carry multiplicities $> 1$. Semantically: ``forgetting and re-summoning a variable can only increase the count.''
-\end{enumerate}
-
-%% ============================================================
 \section{Remarks}
 \label{sec:remarks}
 %% ============================================================
 
-\textbf{Scope.} The completeness and decidability results (Section~\ref{sec:completeness}--\ref{sec:decidability}) are proved specifically for $\Mat_\N = \Span_{\mathrm{mono}}(\FinSet)$. A general characterisation theorem --- that every functionally complete bag-cartesian bicategory is biequivalent to $\Span_{\mathrm{mono}}(\Det(\mathbf{B}))$ --- requires additional work: the converse direction of the ordering ($r \leq r' \Rightarrow$ existence of comparison mono) uses the axiom of choice for finite sets, and a general abstract version would require an appropriate internal choice principle or a strengthened universal property for functional completeness.
+\textbf{Relation to CBI.} In the cartesian bicategory framework of \cite{CW}, set-semantic CQ containment $\varphi \subseteq_{\mathrm{set}} \psi$ is equivalent to the existence of a homomorphism $H_\psi \to H_\varphi$ (Chandra--Merlin \cite{CM}), which is a \emph{structural} (database-independent) witness. The derivation in the cartesian bicategory uses this witness directly \cite{BSS}. Our framework provides the analogous \emph{semantic} characterisation for bags (Theorem~\ref{thm:characterisation}), but the passage from semantics to syntax (the completeness conjecture) remains open because bag containment lacks structural witnesses in general.
 
-\medskip\noindent\textbf{Functional completeness.} For $\Mat_\N$, functional completeness holds by explicit construction. The definition (Definition~\ref{def:func-complete}) provides existence; a strengthened version providing a universal property (comparison maps for $j^\op;\varepsilon \leq q$) would enable the general characterisation theorem and is a natural direction for future work.
+\medskip\noindent\textbf{The role of each axiom.} (i)~Frobenius: wire bending and the isomorphism $\Phi/\Psi$. (ii)~Lax naturality of $\delta$: multiplicity structure ($n \leq n^2$ in $\N$). (iii)~Cauchy--Schwarz: compositional coherence of bag-tabulations. (iv)~Adjunction $\delta \dashv \mu$: the counit $\mu;\delta \leq \id$ provides $h^\op;h \leq \id$ for injective maps. (v)~Unit-of-adjunction $\id \leq \varepsilon;\eta$: ``forgetting and re-summoning a variable can only increase the count.''
 
 \medskip\noindent\textbf{Generalisation.} For any class of monomorphisms $\mathcal{M}$ in a category $\mathcal{E}$, one obtains $\Span_\mathcal{M}(\mathcal{E})$ and the $\mathcal{M}$-stable fragment of the cartesian bicategory axioms. The bag-cartesian case is $\mathcal{M} = $ all monos; the set-semantic case is $\mathcal{M} = $ all arrows.
 
