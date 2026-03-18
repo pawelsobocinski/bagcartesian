@@ -124,7 +124,7 @@ We write $\Det(\mathbf{B})$ for the subcategory of deterministic arrows. In $\Ma
 \end{definition}
 
 \begin{remark}\label{rmk:det-vs-map}
-Every map is deterministic (this is axiom (U) of \cite{CW} in the cartesian setting), but the converse fails in $\Mat_\N$: a non-injective function $f$ is deterministic but is \emph{not} a map, since the counit $f^*;f \leq \id$ requires $|f^{-1}(b)| \leq 1$.
+In $\Mat_\N$, every map is deterministic (verified by direct computation: functions are comonoid homomorphisms). In the general cartesian bicategory setting of \cite{CW}, this follows from axiom (U) (lax naturality of $\varepsilon$), which we do not assume. The converse fails in $\Mat_\N$: a non-injective function $f$ is deterministic but is \emph{not} a map, since the counit $f^*;f \leq \id$ requires $|f^{-1}(b)| \leq 1$.
 \end{remark}
 
 The Frobenius structure provides a canonical way to ``bend wires,'' yielding a transpose operation that will play a central role.
@@ -183,7 +183,12 @@ A locally posetal bicategory $\mathbf{B}$ with symmetric monoidal structure $(\o
     (f \Had f);(g \Had g) \;\leq\; (f;g) \Had (f;g).
   \]
 
-  \item \textbf{Special law.} $\delta_X;\mu_X = \id_X$ for all $X$ \textup{(already part of the Frobenius structure, listed for emphasis)}.
+  \item \textbf{Adjunction $\delta \dashv \mu$.} For all $X$:
+  \[
+    \delta_X;\mu_X = \id_X \quad \textup{(unit/special law)}, \qquad
+    \mu_X;\delta_X \leq \id_{X \otimes X} \quad \textup{(counit)}.
+  \]
+  The unit is already part of the Frobenius structure (Definition~\ref{def:frob}(d)). The counit $\mu;\delta \leq \id$ states that $\mathrm{Spider}(2,2) \leq \id \otimes \id$, i.e., $[a{=}b{=}c{=}d] \leq [a{=}c][b{=}d]$ in $\Mat_\N$.
 
   \item \textbf{Unit-of-adjunction.} For all $X$:
   \[
@@ -197,7 +202,7 @@ Composing axiom (ii) on the right with $\mu$ and applying the special law $\delt
 \end{remark}
 
 \begin{remark}
-In $\Mat_\N$: axiom (ii) states $r(a,b) \leq r(a,b)^2$ for all entries (equivalently: entries are $0$ or $\geq 1$). Axiom (iii) states $\sum_y a_y^2 b_y^2 \leq (\sum_y a_y b_y)^2$ for non-negative integers --- a consequence of the non-negative cross terms in $(\sum a_y b_y)^2 = \sum a_y^2 b_y^2 + \sum_{y \neq y'} a_y b_y a_{y'} b_{y'}$. Axiom (v) states $[a{=}b] \leq 1$ in $\N$, i.e., the identity matrix is entrywise dominated by the all-ones matrix.
+In $\Mat_\N$: axiom (ii) states $r(a,b) \leq r(a,b)^2$ for all entries (equivalently: entries are $0$ or $\geq 1$). Axiom (iii) states $\sum_y a_y^2 b_y^2 \leq (\sum_y a_y b_y)^2$ for non-negative integers --- a consequence of the non-negative cross terms in $(\sum a_y b_y)^2 = \sum a_y^2 b_y^2 + \sum_{y \neq y'} a_y b_y a_{y'} b_{y'}$. The counit in axiom (iv) states $[a{=}b{=}c{=}d] \leq [a{=}c][b{=}d]$: checking all four indices equal is stronger than checking pairs equal independently. Axiom (v) states $[a{=}b] \leq 1$ in $\N$, i.e., the identity matrix is entrywise dominated by the all-ones matrix.
 \end{remark}
 
 \begin{remark}[What is \emph{not} assumed]
@@ -205,8 +210,8 @@ In contrast with the cartesian bicategories of Carboni--Walters \cite{CW}, we do
 \begin{itemize}
   \item The full adjunction $\varepsilon \dashv \eta$ (only the unit half, axiom (v)). The counit $\eta;\varepsilon \leq \id_I$ \emph{fails} in $\Mat_\N$: $(\eta;\varepsilon)(*,*) = |X| \not\leq 1$ for $|X| > 1$.
   \item Lax naturality of $\varepsilon$: $r;\varepsilon_Y \leq \varepsilon_X$. This \emph{fails} in $\Mat_\N$: it would require all row sums $\leq 1$.
-  \item Discreteness: $\delta;\delta^* = (\delta^* \otimes \id);(\id \otimes \delta)$.
 \end{itemize}
+Note that discreteness in the sense of \cite{CW} ($\mu;\delta = (\delta \otimes \id);(\id \otimes \mu)$) \emph{does} hold: it is the Frobenius law (Definition~\ref{def:frob}(c)).
 \end{remark}
 
 \subsection{The motivating example}
@@ -229,8 +234,15 @@ where $[P]$ denotes the Iverson bracket ($1$ if $P$ is true, $0$ otherwise). One
 
 The deterministic arrows (Definition~\ref{def:det}) are the functions $X \to Y$, i.e., $\{0,1\}$-matrices with exactly one $1$ per row. Thus $\Det(\Mat_\N) = \FinSet$. The maps (arrows with right adjoints) are the \emph{injective} functions, a proper subcategory: $\Map(\Mat_\N) = \FinSet_{\mathrm{mono}} \subsetneq \FinSet = \Det(\Mat_\N)$.
 
-As we shall see (Section~\ref{sec:mono-stability}), $\Mat_\N \cong \Span_{\mathrm{mono}}(\FinSet)$.
 \end{example}
+
+\begin{proposition}\label{prop:span-mono}
+$\Mat_\N \cong \Span_{\mathrm{mono}}(\FinSet)$ as locally posetal bicategories.
+\end{proposition}
+
+\begin{proof}
+A span $X \xleftarrow{f} S \xrightarrow{g} Y$ in $\FinSet$ determines a matrix $M(x,y) = |\{s \in S : f(s) = x,\, g(s) = y\}| \in \N$. Two spans are isomorphic iff they give the same matrix. A monomorphism of spans $\alpha \colon S \hookrightarrow S'$ (with $f' \circ \alpha = f$, $g' \circ \alpha = g$) exists iff $M(x,y) \leq M'(x,y)$ for all $x,y$ (fibrewise injection). Composition of spans via pullback gives matrix multiplication: $|\mathrm{fibre}_{S \times_Y T}(x,z)| = \sum_y |\mathrm{fibre}_S(x,y)| \cdot |\mathrm{fibre}_T(y,z)|$.
+\end{proof}
 
 %% ============================================================
 \section{The Frobenius Isomorphism}
@@ -389,6 +401,7 @@ The axioms of Definition~\ref{def:bag-cart} arise systematically: $\Span(\mathca
 \hline
 \textbf{Axiom} & \textbf{Witness in $\Span$} & \textbf{Mono?} \\
 \hline
+$\delta \dashv \mu$ (unit) & Isomorphism (special law) & Yes (iso) \\
 $\delta \dashv \mu$ (counit) & Diagonal $\Delta \colon X \hookrightarrow X \times X$ & Yes \\
 $\varepsilon \dashv \eta$ (unit) & Diagonal $\Delta \colon X \hookrightarrow X \times X$ & Yes \\
 $\varepsilon \dashv \eta$ (counit) & $! \colon X \to \{*\}$ & \textbf{No} \\
@@ -413,7 +426,7 @@ Cauchy--Schwarz & Fibrewise pairs $\hookrightarrow$ global pairs & Yes \\
 
   \item \textbf{Cauchy--Schwarz.} Compositional coherence: pullback of bag-tabulations respects the Hadamard product. Ensures functoriality of the characterisation.
 
-  \item \textbf{Special law} ($\delta;\mu = \id$). Makes wire bending involutive. Gives spider normal forms.
+  \item \textbf{Adjunction $\delta \dashv \mu$.} The unit ($\delta;\mu = \id$, the special law) makes wire bending involutive and gives spider normal forms. The counit ($\mu;\delta \leq \id$) provides the inequality $h^\op;h \leq \id$ for injective maps $h$, which is the engine of the bag-tabulation ordering theorem (Theorem~\ref{thm:bag-tab-order}).
 
   \item \textbf{Unit-of-adjunction} ($\id \leq \varepsilon;\eta$). Slack for functional completeness: tabulating objects can carry multiplicities $> 1$. Semantically: ``forgetting and re-summoning a variable can only increase the count.''
 \end{enumerate}
