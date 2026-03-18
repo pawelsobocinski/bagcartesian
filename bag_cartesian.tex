@@ -101,7 +101,7 @@ satisfying the following equations.
 
   \item \textbf{Frobenius law.}
   \[
-    \delta;\mu = (\id \otimes \mu);(\delta \otimes \id) = (\mu \otimes \id);(\id \otimes \delta).
+    (\delta \otimes \id);(\id \otimes \mu) = \mu;\delta = (\id \otimes \delta);(\mu \otimes \id).
   \]
 
   \item \textbf{Special law.} $\delta;\mu = \id_X$.
@@ -119,9 +119,9 @@ The Frobenius structure provides a canonical way to ``bend wires,'' yielding a t
 \begin{definition}[Frobenius transpose]\label{def:transpose}
 For an arrow $r \colon X \to Y$, the \emph{Frobenius transpose} $r^\op \colon Y \to X$ is defined by
 \[
-  r^\op \;=\; (\eta_X \otimes \id_Y);(\id_X \otimes r \otimes \id_Y);(\id_X \otimes \mu_Y;\varepsilon_Y)
+  r^\op \;=\; ((\eta_X;\delta_X) \otimes \id_Y);(\id_X \otimes r \otimes \id_Y);(\id_X \otimes (\mu_Y;\varepsilon_Y))
 \]
-or equivalently (by the spider theorem) by rotating the string diagram of $r$ by $180^\circ$, using $\eta$ to create a cup and $\varepsilon$ to create a cap.
+where $\eta_X;\delta_X \colon I \to X \otimes X$ creates a ``cup'' on $X$ and $\mu_Y;\varepsilon_Y \colon Y \otimes Y \to I$ creates a ``cap'' on $Y$. Equivalently (by the spider theorem), $r^\op$ is obtained by rotating the string diagram of $r$ by $180^\circ$.
 \end{definition}
 
 \begin{lemma}\label{lem:transpose-props}
@@ -194,14 +194,22 @@ In contrast with the cartesian bicategories of Carboni--Walters \cite{CW}, we do
 \subsection{The motivating example}
 
 \begin{example}[$\Mat_\N$]\label{ex:mat-n}
-The bicategory $\Mat_\N$ has finite sets as objects, $\N$-valued matrices $M \colon X \times Y \to \N$ as arrows $X \to Y$, and matrix multiplication as composition. The Frobenius structure is:
+The bicategory $\Mat_\N$ has finite sets as objects, $\N$-valued matrices $M \colon X \times Y \to \N$ as arrows $X \to Y$, and composition given by matrix multiplication: $(M;N)(x,z) = \sum_y M(x,y) \cdot N(y,z)$. The monoidal product is $X \otimes Y = X \times Y$ with $(M \otimes N)((x,y),(x',y')) = M(x,x') \cdot N(y,y')$, and $I = \{*\}$. The ordering is entrywise: $M \leq M'$ iff $M(x,y) \leq M'(x,y)$ for all $x,y$.
+
+The Frobenius structure on an object $X$ is given by the following matrices:
 \begin{align*}
-  \delta(a,(b,c)) &= [a=b=c], &
-  \mu((a,b),c) &= [a=b=c], \\
-  \varepsilon(a,*) &= 1, &
-  \eta(*,a) &= 1.
+  \delta_X &\colon X \to X \times X, &
+  \delta_X(a,(b,c)) &= [a{=}b{=}c], \\
+  \mu_X &\colon X \times X \to X, &
+  \mu_X((a,b),c) &= [a{=}b{=}c], \\
+  \varepsilon_X &\colon X \to I, &
+  \varepsilon_X(a,*) &= 1, \\
+  \eta_X &\colon I \to X, &
+  \eta_X(*,a) &= 1,
 \end{align*}
-Then $\delta;\mu = \id$ (special law) and axioms (i)--(v) all hold. The maps (injective functions) form the category $\FinSet_{\mathrm{mono}}$. As we shall see (Section~\ref{sec:mono-stability}), $\Mat_\N \cong \Span_{\mathrm{mono}}(\FinSet)$.
+where $[P]$ denotes the Iverson bracket ($1$ if $P$ is true, $0$ otherwise). One verifies $\delta;\mu = \id$ (special law) and that axioms (i)--(v) all hold. The Hadamard product is entrywise multiplication: $(M \Had N)(x,y) = M(x,y) \cdot N(x,y)$. The Frobenius transpose is the matrix transpose: $M^\op(y,x) = M(x,y)$.
+
+The maps in $\Mat_\N$ are precisely the injective functions: a $\{0,1\}$-matrix $M_h$ corresponding to a function $h \colon A \to B$ (with $M_h(a,b) = [h(a){=}b]$) satisfies $M_h^*;M_h \leq \id_B$ iff $|h^{-1}(b)| \leq 1$ for all $b$, i.e., $h$ is injective. As we shall see (Section~\ref{sec:mono-stability}), $\Mat_\N \cong \Span_{\mathrm{mono}}(\FinSet)$.
 \end{example}
 
 %% ============================================================
@@ -403,11 +411,6 @@ PODS 1993.
 A.K.~Chandra, P.M.~Merlin.
 \emph{Optimal implementation of conjunctive queries in relational databases.}
 STOC 1977.
-
-\bibitem{KR}
-S.~Kopparty, B.~Rossman.
-\emph{The homomorphism domination exponent.}
-European J.~Combin.\ 32 (2011), 1097--1114.
 
 \end{thebibliography}
 
