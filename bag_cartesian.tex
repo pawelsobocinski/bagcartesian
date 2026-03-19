@@ -202,8 +202,21 @@ We do \textbf{not} assume the full adjunction $\varepsilon \dashv \eta$ (only th
 
 \subsection{The motivating example}
 
-\begin{example}[$\Mat_\N$]\label{ex:mat-n}
-The bicategory $\Mat_\N$ has finite sets as objects, $\N$-valued matrices as arrows (composed by matrix multiplication), $X \otimes Y = X \times Y$, and entrywise ordering. The Frobenius structure is: $\delta(a,(b,c)) = [a{=}b{=}c]$, $\mu((a,b),c) = [a{=}b{=}c]$, $\varepsilon(a,*) = 1$, $\eta(*,a) = 1$. One verifies axioms (i)--(v). The deterministic arrows are functions ($\Det(\Mat_\N) = \FinSet$); the maps are injective functions ($\Map(\Mat_\N) = \FinSet_{\mathrm{mono}}$).
+\begin{example}[$\Mat_\N$ with multiplicative tensor]\label{ex:mat-n}
+The bicategory $\Mat_\N$ has finite sets as objects, $\N$-valued matrices $M \colon X \times Y \to \N$ as arrows $X \to Y$, and composition by matrix multiplication: $(M;N)(x,z) = \sum_y M(x,y) \cdot N(y,z)$. The monoidal structure uses the \textbf{cartesian product} as tensor: $X \otimes Y = X \times Y$, with $(M \otimes N)((x,y),(x',y')) = M(x,x') \cdot N(y,y')$ (the Kronecker product) and $I = \{*\}$ (the singleton). The ordering is entrywise: $M \leq M'$ iff $M(x,y) \leq M'(x,y)$ for all $x,y$.
+
+This is the \emph{multiplicative} tensor on $\Mat_\N$, in which the Frobenius structure captures the diagonal/projection structure of finite sets. Note that $\Mat_\N$ also admits an \emph{additive} tensor (disjoint union on objects, direct sum on matrices), under which the relevant algebraic theory is that of bialgebras; see e.g.~\cite{BSS}. In this paper we work exclusively with the multiplicative tensor.
+
+The Frobenius structure on an object $X$ is:
+\begin{align*}
+  \delta_X(a,(b,c)) &= [a{=}b{=}c], &
+  \mu_X((a,b),c) &= [a{=}b{=}c], \\
+  \varepsilon_X(a,*) &= 1, &
+  \eta_X(*,a) &= 1.
+\end{align*}
+One verifies axioms (i)--(v). The Hadamard product is entrywise multiplication: $(M \Had N)(x,y) = M(x,y) \cdot N(x,y)$. The Frobenius transpose is the matrix transpose: $M^\op(y,x) = M(x,y)$.
+
+The deterministic arrows (Definition~\ref{def:det}) are the functions $X \to Y$, i.e., $\{0,1\}$-matrices with exactly one $1$ per row. Thus $\Det(\Mat_\N) = \FinSet$. The maps (arrows with right adjoints) are the injective functions: $\Map(\Mat_\N) = \FinSet_{\mathrm{mono}} \subsetneq \FinSet = \Det(\Mat_\N)$.
 \end{example}
 
 \begin{proposition}\label{prop:span-mono}
@@ -274,9 +287,33 @@ If $\varphi \leq_{\mathrm{bag}} \psi$ is witnessed by an atom-surjective homomor
 An atom-surjective homomorphism $h$ is a map between variable sets that identifies some variables (surjective on both variables and atoms). In the PROP, variable identification corresponds to spider merging: replacing two spiders (variables) connected by $h$ with a single spider, using $\mu;\delta$ (the Frobenius map). Since $h$ fixes the free variable and covers all atoms, the resulting diagram equals $\psi$. The derivation uses only the Frobenius equations and the special law.
 \end{proof}
 
-\begin{remark}
-In our enumeration of CQs with $\leq 3$ atoms and $\leq 3$ bound variables over one binary relation, $219$ out of $224$ bag containments are witnessed by atom-surjective homomorphisms. These are all derivable by Theorem~\ref{thm:structural-complete}. The remaining $5$ ``gap pairs'' are bag containments without such witnesses.
-\end{remark}
+%% ============================================================
+\section{Computational Evidence}
+\label{sec:evidence}
+%% ============================================================
+
+We enumerated all CQs of the form $\varphi(x) = \exists y_1, \ldots, y_k.\, R(v_1,w_1) \wedge \cdots \wedge R(v_m, w_m)$ with one free variable $x$, at most $3$ bound variables, and at most $3$ atoms over a single binary relation $R$. This yields $69$ CQs (up to isomorphism) and $4{,}692$ ordered pairs, of which $2{,}038$ satisfy set containment and $224$ satisfy bag containment (verified on databases with domain size up to $29$ and entries up to $10$).
+
+Of the $224$ bag containments, $219$ are witnessed by atom-surjective homomorphisms and are thus derivable by Theorem~\ref{thm:structural-complete}. The remaining $5$ \emph{gap pairs} are bag containments without such witnesses:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{cl}
+\hline
+\# & \textbf{Gap pair} $\varphi \leq_{\mathrm{bag}} \psi$ \\
+\hline
+1 & $\exists y_1.\, R(x,x) \wedge R(x,y_1) \wedge R(y_1,x) \;\leq\; \exists y_1 y_2.\, R(x,y_1) \wedge R(y_1,x) \wedge R(y_1,y_2)$ \\
+2 & $\exists y_1.\, R(x,x) \wedge R(x,y_1) \wedge R(y_1,y_1) \;\leq\; \exists y_1 y_2.\, R(x,y_1) \wedge R(y_1,y_1) \wedge R(y_1,y_2)$ \\
+3 & $\exists y_1.\, R(x,x) \wedge R(y_1,x) \wedge R(y_1,y_1) \;\leq\; \exists y_1 y_2.\, R(y_1,x) \wedge R(y_1,y_1) \wedge R(y_2,y_1)$ \\
+4 & $\exists y_1 y_2.\, R(x,x) \wedge R(x,y_1) \wedge R(y_2,x) \;\leq\; \exists y_1 y_2 y_3.\, R(x,y_1) \wedge R(y_2,x) \wedge R(y_2,y_3)$ \\
+5 & $\exists y_1 y_2.\, R(x,x) \wedge R(y_1,x) \wedge R(y_2,x) \;\leq\; \exists y_1 y_2 y_3.\, R(y_1,x) \wedge R(y_2,x) \wedge R(y_3,y_2)$ \\
+\hline
+\end{tabular}
+\end{center}
+
+All five follow the same pattern: $\varphi$ contains a \textbf{self-loop} $R(x,x)$ on the free variable, while $\psi$ replaces it with a \textbf{pendant}~--- a fresh atom attached to a bound variable with a new existentially quantified variable. The shared atoms (the non-self-loop ones) are structurally the same.
+
+The containment holds because the self-loop contributes $T(a,a)$ (a diagonal entry) while the pendant contributes $\sum_c T(b,c)$ (a row sum), and the principle ``diagonal $\leq$ row sum'' ($T(a,a) \leq \sum_c T(a,c)$, which is the content of axiom~(v): $\id \leq \varepsilon;\eta$) ensures the overall inequality. However, applying axiom~(v) to a single atom endpoint is not sufficient: a computer search verified that \emph{no} single application of $\id \leq \varepsilon;\eta$ to any endpoint of any atom of $\varphi_1$ produces an intermediate CQ that is $\leq_{\mathrm{bag}} \psi_1$. All six one-step modifications are semantically incomparable with $\psi_1$. This means that a PROP derivation, if one exists, must pass through \emph{non-CQ} intermediate terms (general string diagrams, not spider networks corresponding to CQs).
 
 %% ============================================================
 \section{The Completeness Conjecture}
@@ -287,16 +324,10 @@ In our enumeration of CQs with $\leq 3$ atoms and $\leq 3$ bound variables over 
 The bag-cartesian bicategory axioms \textup{(i)--(v)} are complete for $\Mat_\N$: for CQ terms $\varphi$ and $\psi$, $\varphi \leq_{\mathrm{bag}} \psi$ iff $\varphi \leq \psi$ is derivable from the axioms.
 \end{conjecture}
 
-\begin{remark}[The gap]
-The semantic characterisation (Theorem~\ref{thm:characterisation}) shows that bag containment in $\Mat_\N$ is equivalent to the existence of injective comparison maps between bag-tabulations. For \emph{specific} databases, the bag-tabulation ordering theorem (Theorem~\ref{thm:bag-tab-order}) gives a derivation. However, these derivations are \emph{database-specific}: the tabulating spans and comparison injections depend on the matrix entries of the database. A proof of the conjecture would require showing that, for each valid $\varphi \leq_{\mathrm{bag}} \psi$, there exists a \emph{single} derivation in the PROP that works universally for all databases. This is the fundamental difficulty: bag containment witnesses are database-dependent, unlike the structural (database-independent) homomorphisms of set semantics.
-\end{remark}
+The semantic characterisation (Theorem~\ref{thm:characterisation}) shows that bag containment in $\Mat_\N$ is equivalent to the existence of injective comparison maps between bag-tabulations. For \emph{specific} databases, the bag-tabulation ordering theorem (Theorem~\ref{thm:bag-tab-order}) gives a derivation. However, these derivations are \emph{database-specific}: the tabulating spans and comparison injections depend on the matrix entries. A proof of the conjecture would require a \emph{single} derivation in the PROP that works universally for all databases. This is the fundamental difficulty: bag containment witnesses are database-dependent, unlike the structural (database-independent) homomorphisms of set semantics.
 
 \begin{remark}[Decidability]
 If Conjecture~\ref{conj:completeness} holds, bag-semantic CQ containment is decidable: containment is r.e.\ (enumerate derivations in the PROP, where coherence axioms are built into the PROP structure and equality is decidable by the spider theorem), and non-containment is r.e.\ (enumerate counterexample databases).
-\end{remark}
-
-\begin{remark}[Evidence]
-Computational enumeration supports the conjecture: all $224$ bag containments found for CQs with $\leq 3$ atoms are consistent with the axioms ($219$ derived structurally, $5$ verified semantically). The $5$ gap pairs all follow the ``self-loop to pendant'' pattern, suggesting a uniform derivation strategy via axiom~(v) ($\id \leq \varepsilon;\eta$), though we have not found explicit PROP derivations.
 \end{remark}
 
 %% ============================================================
